@@ -12,6 +12,7 @@ public class CalculatorController {
 
     @FXML
     void keyPressed(KeyEvent event) {
+        System.out.println("Key Pressed: " + event.getCode());
         switch (event.getCode()) {
             case NUMPAD0, DIGIT0:
                 click0();
@@ -46,10 +47,10 @@ public class CalculatorController {
             case ADD:
                 plusClick();
                 break;
-            case SUBTRACT:
+            case SUBTRACT, MINUS:
                 minusClick();
                 break;
-            case MULTIPLY:
+            case MULTIPLY, ASTERISK:
                 multiplicationClick();
                 break;
             case DIVIDE:
@@ -220,11 +221,19 @@ public class CalculatorController {
 
         calculator.setCurrentValue(Double.parseDouble(text));
         if (calculator.getCurrentOperation() != Operations.NONE) {
-            double result = calculator.performOperation();
-            updateView(result);
-            calculator.setCurrentOperation(Operations.NONE);
-            calculator.setStoredValue(0.0);
-            calculator.setCurrentValue(0.0);
+            try {
+                double result = calculator.performOperation();
+                updateView(result);
+                calculator.setCurrentOperation(Operations.NONE);
+                calculator.setStoredValue(0.0);
+                calculator.setCurrentValue(0.0);
+            } catch (ArithmeticException e) {
+                // Print an error message and reset the calculator
+                calculator.setCurrentOperation(Operations.NONE);
+                calculator.setStoredValue(0.0);
+                calculator.setCurrentValue(0.0);
+                tfView.setText("Error   ");
+            }
         } else {
             updateView(calculator.getCurrentValue());
         }
