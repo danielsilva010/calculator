@@ -21,13 +21,15 @@ public class Calculator {
 
     public double divide(double a, double b) {
         if (b == 0) {
-            isError = true;
-            return 0;
+            throw new ArithmeticException("Cannot divide by zero");
         }
         return a / b;
     }
 
     public double performOperation() {
+        if (currentOperation == null) {
+            return currentValue;
+        }
         switch (currentOperation) {
             case ADDITION:
                 return add(storedValue, currentValue);

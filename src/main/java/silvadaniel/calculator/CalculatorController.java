@@ -6,74 +6,17 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 
 public class CalculatorController {
-    private Calculator calculator = new Calculator();
-
-    @FXML
-    private Button Button0;
+    private final Calculator calculator = new Calculator();
 
     @FXML
     private TextField tfView;
 
     @FXML
-    private Button button1;
-
-    @FXML
-    private Button button2;
-
-    @FXML
-    private Button button3;
-
-    @FXML
-    private Button button4;
-
-    @FXML
-    private Button button5;
-
-    @FXML
-    private Button button6;
-
-    @FXML
-    private Button button7;
-
-    @FXML
-    private Button button8;
-
-    @FXML
-    private Button clearButton;
-
-    @FXML
-    private Button click9;
-
-    @FXML
-    private Button decimalButton;
-
-    @FXML
-    private Button divideButton;
-
-    @FXML
-    private Button equalsButton;
-
-    @FXML
-    private Button minusButton;
-
-    @FXML
-    private Button multiplicationButton;
-
-    @FXML
-    private Button percentButton;
-
-    @FXML
-    private Button plusButton;
-
-    @FXML
-    private Button plusOrMinusButton;
-
-    @FXML
     void button9(ActionEvent event) {
         String oldText = tfView.getText();
         String newText = oldText.equals("0") ? "9" : oldText + "9";
-        calculator.setCurrentValue(9);
         updateView(Double.parseDouble(newText));
+
     }
 
     @FXML
@@ -88,7 +31,6 @@ public class CalculatorController {
     void click0(ActionEvent event) {
         String oldText = tfView.getText();
         String newText = oldText.equals("0") ? "0" : oldText + "0";
-        calculator.setCurrentValue(0);
         updateView(Double.parseDouble(newText));
     }
 
@@ -96,7 +38,6 @@ public class CalculatorController {
     void click1(ActionEvent event) {
         String oldText = tfView.getText();
         String newText = oldText.equals("0") ? "1" : oldText + "1";
-        calculator.setCurrentValue(1);
         updateView(Double.parseDouble(newText));
     }
 
@@ -104,7 +45,6 @@ public class CalculatorController {
     void click2(ActionEvent event) {
         String oldText = tfView.getText();
         String newText = oldText.equals("0") ? "2" : oldText + "2";
-        calculator.setCurrentValue(2);
         updateView(Double.parseDouble(newText));
     }
 
@@ -112,7 +52,6 @@ public class CalculatorController {
     void click3(ActionEvent event) {
         String oldText = tfView.getText();
         String newText = oldText.equals("0") ? "3" : oldText + "3";
-        calculator.setCurrentValue(3);
         updateView(Double.parseDouble(newText));
     }
 
@@ -120,7 +59,6 @@ public class CalculatorController {
     void click4(ActionEvent event) {
         String oldText = tfView.getText();
         String newText = oldText.equals("0") ? "4" : oldText + "4";
-        calculator.setCurrentValue(4);
         updateView(Double.parseDouble(newText));
     }
 
@@ -128,7 +66,6 @@ public class CalculatorController {
     void click5(ActionEvent event) {
         String oldText = tfView.getText();
         String newText = oldText.equals("0") ? "5" : oldText + "5";
-        calculator.setCurrentValue(5);
         updateView(Double.parseDouble(newText));
     }
 
@@ -136,7 +73,6 @@ public class CalculatorController {
     void click6(ActionEvent event) {
         String oldText = tfView.getText();
         String newText = oldText.equals("0") ? "6" : oldText + "6";
-        calculator.setCurrentValue(6);
         updateView(Double.parseDouble(newText));
     }
 
@@ -144,7 +80,6 @@ public class CalculatorController {
     void click7(ActionEvent event) {
         String oldText = tfView.getText();
         String newText = oldText.equals("0") ? "7" : oldText + "7";
-        calculator.setCurrentValue(7);
         updateView(Double.parseDouble(newText));
     }
 
@@ -152,52 +87,95 @@ public class CalculatorController {
     void click8(ActionEvent event) {
         String oldText = tfView.getText();
         String newText = oldText.equals("0") ? "8" : oldText + "8";
-        calculator.setCurrentValue(8);
         updateView(Double.parseDouble(newText));
     }
 
     @FXML
     void decimalClick(ActionEvent event) {
-
+        String oldText = tfView.getText();
+        if (!oldText.contains(".")) {
+            String newText = oldText + ".";
+            updateView(Double.parseDouble(newText));
+            calculator.setCurrentValue(Double.parseDouble(newText));
+        }
     }
 
     @FXML
     void divideClick(ActionEvent event) {
-
+        performPendingOperation();
+        calculator.setCurrentOperation(Operations.DIVISION);
+        calculator.setStoredValue(Double.parseDouble(tfView.getText()));
+        tfView.setText("0");
     }
+
 
     @FXML
     void equalsClick(ActionEvent event) {
-
+        calculator.setCurrentValue(Double.parseDouble(tfView.getText()));
+        if (calculator.getCurrentOperation() != Operations.NONE) {
+            double result = calculator.performOperation();
+            updateView(result);
+            calculator.setCurrentOperation(Operations.NONE);
+            calculator.setStoredValue(0.0);
+            calculator.setCurrentValue(0.0);
+        } else {
+            updateView(calculator.getCurrentValue());
+        }
     }
 
     @FXML
     void minusClick(ActionEvent event) {
-
+        performPendingOperation();
+        calculator.setCurrentOperation(Operations.SUBTRACTION);
+        calculator.setStoredValue(Double.parseDouble(tfView.getText()));
+        tfView.setText("0");
     }
 
     @FXML
     void multiplicationClick(ActionEvent event) {
-
+        performPendingOperation();
+        calculator.setCurrentOperation(Operations.MULTIPLICATION);
+        calculator.setStoredValue(Double.parseDouble(tfView.getText()));
+        tfView.setText("0");
     }
 
     @FXML
     void percentClick(ActionEvent event) {
-
+        //divide current val by 100
+        double value = Double.parseDouble(tfView.getText());
+        value /= 100.00;
+        updateView(value);
+        calculator.setCurrentValue(value);
     }
 
     @FXML
     void plusClick(ActionEvent event) {
-
+        performPendingOperation();
+        calculator.setCurrentOperation(Operations.ADDITION);
+        calculator.setStoredValue(Double.parseDouble(tfView.getText()));
+        tfView.setText("0");
     }
+
 
     @FXML
     void plusOrMinusClick(ActionEvent event) {
+        double value = Double.parseDouble(tfView.getText());
+        value *= -1;
+        updateView(value);
+        calculator.setCurrentValue(value);
+    }
 
+    private void performPendingOperation() {
+        if (calculator.getCurrentOperation() != Operations.NONE) {
+            calculator.setCurrentValue(Double.parseDouble(tfView.getText()));
+            double result = calculator.performOperation();
+            updateView(result);
+        }
     }
 
     public void updateView(double value) {
-        tfView.setText(String.format("%.0f", value));
+        if (value == (long) value) tfView.setText(String.format("%d", (long) value));
+        else tfView.setText(String.format("%s", value));
     }
 
 }
