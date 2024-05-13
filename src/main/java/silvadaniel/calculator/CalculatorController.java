@@ -169,6 +169,7 @@ public class CalculatorController {
         if (calculator.getCurrentOperation() != Operations.NONE) {
             calculator.setCurrentValue(Double.parseDouble(tfView.getText()));
             double result = calculator.performOperation();
+            calculator.setStoredValue(result); // Store the result for the next operation
             updateView(result);
         }
     }
